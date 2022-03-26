@@ -19,7 +19,8 @@ let snake = [
 let dx = 10;
 let dy = 0;
 let changing_direction = false;
-
+let foodX;
+let foodY;
 const snakeBoard = document.getElementById('canvas');
 const snakeBoardCtx = snakeBoard.getContext('2d');
 snakeBoard.width = 800;
@@ -36,14 +37,16 @@ const clearBoard = function () {
 // Main funciton where everyginh will go
 const main = function () {
   changing_direction = false;
+
   checkIfGameOver();
+
   setTimeout(function onTick() {
     clearBoard();
+    drawFood();
     drawSnake();
     snakeMovement();
     main();
   }, 100);
-
   document.addEventListener('keydown', changeDirection);
 };
 
@@ -62,17 +65,19 @@ const drawSnake = function () {
   snake.forEach(drawSnakePart);
 };
 
+// Game Over
 const checkIfGameOver = function () {
-  if (snake[0].x + 20 > snakeBoard.width) {
+  // if snake posotion is at the end
+  if (snake[0].x + 10 > snakeBoard.width) {
     dx = -dx;
   }
-  if (snake[0].x + -10 < 0) {
+  if (snake[0].x < 0) {
     dx = -dx;
   }
   if (snake[0].y > snakeBoard.height) {
     dy = -dy;
   }
-  if (snake[0].y < 0) {
+  if (snake[0].y + 10 < 0) {
     dy = -dy;
   }
 };
@@ -118,4 +123,26 @@ const snakeMovement = function () {
   snake.pop();
 };
 
+// Creating food at random places
+const randomFood = function (min, max) {
+  return Math.round((Math.random() * (max - min) + min) / 10) * 10;
+};
+
+const generateFood = function () {
+  foodX = randomFood(0, snakeBoard.width - 10);
+  foodY = randomFood(0, snakeBoard.height - 10);
+
+  snake.forEach(function hasEatenPart(part) {
+    const hasEaten = part.x == foodX && part.y == foodY;
+    if (hasEaten) generateFood();
+  });
+};
+
+const drawFood = function () {
+  snakeBoardCtx.fillStyle = snake_col;
+  snakeBoardCtx.strokestyle = snake_col;
+  snakeBoardCtx.fillRect(foodX, foodY, 10, 10);
+  snakeBoardCtx.strokeRect(foodX, foodY, 10, 10);
+};
+generateFood();
 main();
