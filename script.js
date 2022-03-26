@@ -7,6 +7,7 @@ const board_border = 'rgb(18, 145, 184)';
 const board_background = 'black';
 const snake_col = 'lightblue';
 const snake_border = 'darkblue';
+const score = document.querySelector('.score-number');
 
 let snake = [
   { x: 400, y: 300 },
@@ -21,7 +22,7 @@ let dy = 0;
 let changing_direction = false;
 let foodX;
 let foodY;
-
+let currentscore = 0;
 const snakeBoard = document.getElementById('canvas');
 const snakeBoardCtx = snakeBoard.getContext('2d');
 snakeBoard.width = 800;
@@ -130,6 +131,8 @@ const snakeMovement = function () {
   const hasEatenFood = snake[0].x === foodX && snake[0].y === foodY;
   if (hasEatenFood) {
     generateFood();
+    currentscore++;
+    score.innerText = currentscore;
   } else {
     snake.pop();
   }
