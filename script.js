@@ -41,8 +41,7 @@ const clearBoard = function () {
 const main = function () {
   changing_direction = false;
 
-  checkIfGameOver();
-
+  if (checkIfGameOver()) return;
   setTimeout(function onTick() {
     clearBoard();
     drawFood();
@@ -70,20 +69,19 @@ const drawSnake = function () {
 
 /////////////////////////////////////////////////
 // Game Over
+
 const checkIfGameOver = function () {
   // if snake posotion is at the end
-  if (snake[0].x + 10 > snakeBoard.width) {
-    dx = -dx;
+  for (let i = 4; i < snake.length; i++) {
+    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
   }
-  if (snake[0].x < 0) {
-    dx = -dx;
-  }
-  if (snake[0].y > snakeBoard.height) {
-    dy = -dy;
-  }
-  if (snake[0].y + 10 < 0) {
-    dy = -dy;
-  }
+
+  const hitRightWall = snake[0].x + 10 > snakeBoard.width;
+  const hitLeftWall = snake[0].x < 0;
+  const hitTopWall = snake[0].y < 0;
+  const hitBottomWall = snake[0].y > snakeBoard.height - 10;
+
+  return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
 };
 
 /////////////////////////////////////////////////
@@ -164,5 +162,5 @@ const drawFood = function () {
 /////////////////////////////////////////////////
 // Eating the food and adding to snake array
 
-generateFood();
 main();
+generateFood();
